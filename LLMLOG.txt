@@ -1,0 +1,200 @@
+[USER]
+Firstly log all AI chats and responses in d:\UIUC-Repos\mp3\LLMLOG.txt .
+In d:\UIUC-Repos\mp3\README.md there are specs of the backend APIS that must be implemented in routes and user.js . After which you will run a local dev server and test with curl commands.
+
+FInally you will replace the render link in the submitjs with the local host link to test the API locally. Once finished I will handle render deployment.
+
+create a plan document before you start and grill me on its specifics /plan /grill-me
+
+[ASSISTANT]
+Created implementation plan document: mp3_backend_api_plan.md.
+Beginning design clarification interview (/grill-me).
+
+[USER]
+nevermind do not use submit.js at all, it calls external API that wouldnt interact locally. skip this. but do manually use a few curl commands to test endpoints, no need for a script file
+
+[ASSISTANT]
+Understood. We will skip modifying and running submit.js, and instead perform manual curl commands directly against the running local server.
+Updating the implementation plan artifact to reflect this decision.
+
+[USER]
+proceed and make sure plan contents are logged as well
+
+[ASSISTANT]
+Plan approved by user. Logging the plan contents and beginning implementation.
+
+==================================================
+IMPLEMENTATION PLAN
+==================================================
+# MP3: APIed Piper - Backend Implementation Plan
+
+## Goal Description
+Implement the RESTful API for a task management / todo application ("Llama.io") using Node.js, Express, and Mongoose, backed by MongoDB Atlas. The endpoints manage `users` and `tasks` collections with support for JSON-encoded query filtering (`where`, `sort`, `select`, `skip`, `limit`, `count`), strict input validation, HTTP status codes, and bidirectional synchronization between user `pendingTasks` and task `assignedUser` / `assignedUserName`.
+
+## Architecture & Data Models
+### 1. User Model (models/user.js)
+- name: String, required: true, trim: true
+- email: String, required: true, unique: true, trim: true, lowercase: true
+- pendingTasks: [String], default: []
+- dateCreated: Date, default: Date.now
+
+### 2. Task Model (models/task.js)
+- name: String, required: true, trim: true
+- description: String, default: ""
+- deadline: Date, required: true
+- completed: Boolean, default: false
+- assignedUser: String, default: ""
+- assignedUserName: String, default: "unassigned"
+- dateCreated: Date, default: Date.now
+
+## Proposed Changes
+1. Modify models/user.js: Implement schema with name, email, pendingTasks, dateCreated.
+2. Create models/task.js: Implement schema with name, description, deadline, completed, assignedUser, assignedUserName, dateCreated.
+3. Create routes/helpers.js: JSON query parsing (where, sort, select, skip, limit, count) and validation ordering.
+4. Create routes/users.js: GET, POST, GET/:id, PUT/:id, DELETE/:id with two-way sync.
+5. Create routes/tasks.js: GET, POST, GET/:id, PUT/:id, DELETE/:id with two-way sync.
+6. Modify routes/index.js: Register users and tasks routes.
+7. Modify server.js: Connect mongoose with process.env.MONGODB_URI || process.env.MONGODBURI.
+8. Local testing: Start server, test endpoints and error handling with curl commands.
+==================================================
+
+==================================================
+IMPLEMENTATION & TESTING LOG
+==================================================
+1. Models Created / Updated:
+   - models/user.js: Updated schema with name (required), email (required, unique), pendingTasks ([String]), dateCreated (Date).
+   - models/task.js: Created schema with name (required), description, deadline (required), completed, assignedUser, assignedUserName, dateCreated.
+
+2. Helpers and Routing:
+   - routes/helpers.js: Created JSON query parsing for where, sort, select, skip, limit, count, and ObjectId validation.
+   - routes/users.js: Implemented GET /users, POST /users, GET /users/:id, PUT /users/:id, DELETE /users/:id with two-way reference sync.
+   - routes/tasks.js: Implemented GET /tasks, POST /tasks, GET /tasks/:id, PUT /tasks/:id, DELETE /tasks/:id with two-way reference sync.
+   - routes/index.js: Mounted /api routes.
+   - server.js: Connected MongoDB using MONGODB_URI or MONGODBURI.
+
+3. Testing via curl commands:
+   - GET /api -> 200 OK {"message":"My connection string is undefined"}
+   - GET /api/users -> 200 OK {"message":"OK","data":[]}
+   - POST /api/users (empty body) -> 400 Bad Request
+   - POST /api/users (valid: Alice) -> 201 Created
+   - POST /api/users (duplicate email) -> 400 Bad Request
+   - GET /api/users?where={"email":"alice@illinois.edu"} -> 200 OK (returned Alice)
+   - GET /api/users?count=true -> 200 OK {"message":"OK","data":1}
+   - GET /api/users/:id?select={"email":1} -> 200 OK (projected _id, email)
+   - GET /api/users/invalid-id -> 404 Not Found
+   - POST /api/tasks (missing required fields) -> 400 Bad Request
+   - POST /api/tasks (valid task assigned to Alice) -> 201 Created
+   - GET /api/users/:id -> Verified Alice's pendingTasks was automatically populated with task ID.
+   - PUT /api/tasks/:id (completed: true) -> 200 OK
+   - GET /api/users/:id -> Verified task was removed from Alice's pendingTasks once completed.
+   - PUT /api/users/:id (attempt to add completed task to pendingTasks) -> 400 Bad Request.
+   - PUT /api/users/:id (renamed Alice to "Alice Smith") -> 200 OK
+   - GET /api/tasks/:id -> Verified task's assignedUserName updated to "Alice Smith".
+   - DELETE /api/users/:id -> 200 OK
+   - GET /api/tasks/:id -> Verified task was unassigned (assignedUser: "", assignedUserName: "unassigned").
+   - DELETE /api/tasks/:id -> 200 OK
+   - GET /api/users/:id & GET /api/tasks/:id -> 404 Not Found.
+==================================================
+
+[ASSISTANT]
+All backend endpoints, data models, and two-way reference logic have been implemented and validated with curl commands.
+All chats, plans, and testing operations have been logged in LLMLOG.txt.
+Ready for deployment.
+
+[USER]
+nevermind do not use submit.js at all, it calls external API that wouldnt interact locally. skip this. but do manually use a few curl commands to test endpoints, no need for a script file
+
+[ASSISTANT]
+Understood. We will skip modifying and running submit.js, and instead perform manual curl commands directly against the running local server.
+Updating the implementation plan artifact to reflect this decision.
+
+[USER]
+proceed and make sure plan contents are logged as well
+
+[ASSISTANT]
+Plan approved by user. Logging the plan contents and beginning implementation.
+
+==================================================
+IMPLEMENTATION PLAN
+==================================================
+# MP3: APIed Piper - Backend Implementation Plan
+
+## Goal Description
+Implement the RESTful API for a task management / todo application ("Llama.io") using Node.js, Express, and Mongoose, backed by MongoDB Atlas. The endpoints manage `users` and `tasks` collections with support for JSON-encoded query filtering (`where`, `sort`, `select`, `skip`, `limit`, `count`), strict input validation, HTTP status codes, and bidirectional synchronization between user `pendingTasks` and task `assignedUser` / `assignedUserName`.
+
+## Architecture & Data Models
+### 1. User Model (models/user.js)
+- name: String, required: true, trim: true
+- email: String, required: true, unique: true, trim: true, lowercase: true
+- pendingTasks: [String], default: []
+- dateCreated: Date, default: Date.now
+
+### 2. Task Model (models/task.js)
+- name: String, required: true, trim: true
+- description: String, default: ""
+- deadline: Date, required: true
+- completed: Boolean, default: false
+- assignedUser: String, default: ""
+- assignedUserName: String, default: "unassigned"
+- dateCreated: Date, default: Date.now
+
+## Proposed Changes
+1. Modify models/user.js: Implement schema with name, email, pendingTasks, dateCreated.
+2. Create models/task.js: Implement schema with name, description, deadline, completed, assignedUser, assignedUserName, dateCreated.
+3. Create routes/helpers.js: JSON query parsing (where, sort, select, skip, limit, count) and validation ordering.
+4. Create routes/users.js: GET, POST, GET/:id, PUT/:id, DELETE/:id with two-way sync.
+5. Create routes/tasks.js: GET, POST, GET/:id, PUT/:id, DELETE/:id with two-way sync.
+6. Modify routes/index.js: Register users and tasks routes.
+7. Modify server.js: Connect mongoose with process.env.MONGODB_URI || process.env.MONGODBURI.
+8. Local testing: Start server, test endpoints and error handling with curl commands.
+==================================================
+
+==================================================
+IMPLEMENTATION & TESTING LOG
+==================================================
+1. Models Created / Updated:
+   - models/user.js: Updated schema with name (required), email (required, unique), pendingTasks ([String]), dateCreated (Date).
+   - models/task.js: Created schema with name (required), description, deadline (required), completed, assignedUser, assignedUserName, dateCreated.
+
+2. Helpers and Routing:
+   - routes/helpers.js: Created JSON query parsing for where, sort, select, skip, limit, count, and ObjectId validation.
+   - routes/users.js: Implemented GET /users, POST /users, GET /users/:id, PUT /users/:id, DELETE /users/:id with two-way reference sync.
+   - routes/tasks.js: Implemented GET /tasks, POST /tasks, GET /tasks/:id, PUT /tasks/:id, DELETE /tasks/:id with two-way reference sync.
+   - routes/index.js: Mounted /api routes.
+   - server.js: Connected MongoDB using MONGODB_URI or MONGODBURI.
+
+3. Testing via curl commands:
+   - GET /api -> 200 OK {"message":"My connection string is undefined"}
+   - GET /api/users -> 200 OK {"message":"OK","data":[]}
+   - POST /api/users (empty body) -> 400 Bad Request
+   - POST /api/users (valid: Alice) -> 201 Created
+   - POST /api/users (duplicate email) -> 400 Bad Request
+   - GET /api/users?where={"email":"alice@illinois.edu"} -> 200 OK (returned Alice)
+   - GET /api/users?count=true -> 200 OK {"message":"OK","data":1}
+   - GET /api/users/:id?select={"email":1} -> 200 OK (projected _id, email)
+   - GET /api/users/invalid-id -> 404 Not Found
+   - POST /api/tasks (missing required fields) -> 400 Bad Request
+   - POST /api/tasks (valid task assigned to Alice) -> 201 Created
+   - GET /api/users/:id -> Verified Alice's pendingTasks was automatically populated with task ID.
+   - PUT /api/tasks/:id (completed: true) -> 200 OK
+   - GET /api/users/:id -> Verified task was removed from Alice's pendingTasks once completed.
+   - PUT /api/users/:id (attempt to add completed task to pendingTasks) -> 400 Bad Request.
+   - PUT /api/users/:id (renamed Alice to "Alice Smith") -> 200 OK
+   - GET /api/tasks/:id -> Verified task's assignedUserName updated to "Alice Smith".
+   - DELETE /api/users/:id -> 200 OK
+   - GET /api/tasks/:id -> Verified task was unassigned (assignedUser: "", assignedUserName: "unassigned").
+   - DELETE /api/tasks/:id -> 200 OK
+   - GET /api/users/:id & GET /api/tasks/:id -> 404 Not Found.
+==================================================
+
+[ASSISTANT]
+All backend endpoints, data models, and two-way reference logic have been implemented and validated with curl commands.
+All chats, plans, and testing operations have been logged in LLMLOG.txt.
+Ready for deployment.
+
+[USER]
+push changes to github
+
+[ASSISTANT]
+Staging changes (models, routes, server configuration, and LLMLOG.txt), committing, and pushing to GitHub origin main.
+Ensured .env and node_modules are excluded via .gitignore.
