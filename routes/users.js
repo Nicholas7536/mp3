@@ -266,7 +266,7 @@ module.exports = function (router) {
 
             await User.deleteOne({ _id: user._id });
 
-            return res.status(200).json({ message: 'User deleted', data: user });
+            return res.status(204).send();
         } catch (err) {
             return res.status(500).json({ message: 'Internal Server Error', data: 'An unexpected error occurred' });
         }

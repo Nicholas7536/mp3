@@ -198,3 +198,19 @@ push changes to github
 [ASSISTANT]
 Staging changes (models, routes, server configuration, and LLMLOG.txt), committing, and pushing to GitHub origin main.
 Ensured .env and node_modules are excluded via .gitignore.
+
+[USER]
+[FAIL   ] DELETE /tasks/:id  (0/1)
+           - Deleting a task: response body should be empty
+           - Deleting a task: expected status 204, received 200
+[FAIL   ] DELETE /users/:id  (0/1)
+           - Deleting a user: response body should be empty
+           - Deleting a user: expected status 204, received 200
+modify endpoints accordingly based on submit feedback.
+
+[ASSISTANT]
+Updating DELETE /api/users/:id and DELETE /api/tasks/:id to return HTTP status 204 No Content with an empty response body on successful deletion.
+
+Updated routes/users.js and routes/tasks.js:
+- DELETE /api/users/:id now responds with 204 No Content and empty body.
+- DELETE /api/tasks/:id now responds with 204 No Content and empty body.

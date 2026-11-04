@@ -267,7 +267,7 @@ module.exports = function (router) {
 
             await Task.deleteOne({ _id: task._id });
 
-            return res.status(200).json({ message: 'Task deleted', data: task });
+            return res.status(204).send();
         } catch (err) {
             return res.status(500).json({ message: 'Internal Server Error', data: 'An unexpected error occurred' });
         }
